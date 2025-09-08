@@ -1,0 +1,13 @@
+# This file contains the local configuration for the PraVaahan project.
+# Copy this file to local.properties and fill in your actual values.
+
+# SDK location (automatically set by Android Studio)
+sdk.dir=C\:\\Users\\YourUsername\\AppData\\Local\\Android\\Sdk
+
+# Supabase Configuration
+# Get these values from your Supabase project dashboard
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-anon-key-here
+
+# Note: Never commit local.properties to version control
+# It should be listed in .gitignore
