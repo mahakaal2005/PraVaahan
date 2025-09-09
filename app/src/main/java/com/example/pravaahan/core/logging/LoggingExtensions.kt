@@ -46,3 +46,11 @@ fun Logger.logConflictDetected(tag: String, conflictId: String, trainsInvolved: 
 fun Logger.logCriticalTrainEvent(tag: String, event: String, trainId: String, details: String) {
     critical(tag, "Critical Train Event: $event for train $trainId - $details")
 }
+
+fun Logger.logPerformanceMetric(tag: String, metricName: String, value: Float, unit: String = "") {
+    debug(tag, "Performance Metric: $metricName = $value${if (unit.isNotEmpty()) " $unit" else ""}")
+}
+
+fun Logger.logSecurityEvent(tag: String, event: String, details: String = "") {
+    warn(tag, "Security Event: $event${if (details.isNotEmpty()) " - $details" else ""}")
+}

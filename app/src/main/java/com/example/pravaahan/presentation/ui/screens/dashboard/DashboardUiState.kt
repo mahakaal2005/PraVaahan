@@ -1,7 +1,6 @@
 package com.example.pravaahan.presentation.ui.screens.dashboard
 
-import com.example.pravaahan.domain.model.ConflictAlert
-import com.example.pravaahan.domain.model.Train
+import com.example.pravaahan.domain.model.*
 
 /**
  * UI state for the Dashboard screen
@@ -13,7 +12,14 @@ data class DashboardUiState(
     val conflicts: List<ConflictAlert> = emptyList(),
     val systemStatus: SystemStatus = SystemStatus(),
     val error: String? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    // Real-time map data
+    val trainStates: List<RealTimeTrainState> = emptyList(),
+    val sectionConfig: RailwaySectionConfig? = null,
+    val connectionStatus: ConnectionState = ConnectionState.DISCONNECTED,
+    val dataQuality: DataQualityIndicators? = null,
+    val selectedTrainId: String? = null,
+    val realTimeModeEnabled: Boolean = true
 )
 
 /**
@@ -64,4 +70,20 @@ sealed class DashboardAction {
      * Retry failed operation
      */
     data object Retry : DashboardAction()
+    
+    // Real-time map actions
+    /**
+     * Select a train on the map
+     */
+    data class SelectTrain(val trainId: String) : DashboardAction()
+    
+    /**
+     * Toggle real-time mode
+     */
+    data class ToggleRealTimeMode(val enabled: Boolean) : DashboardAction()
+    
+    /**
+     * Retry real-time connection
+     */
+    data object RetryConnection : DashboardAction()
 }

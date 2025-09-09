@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 data class Location(
     val latitude: Double,
     val longitude: Double,
-    val sectionId: String = ""
+    val sectionId: String = "",
+    val name: String = "Unknown Location"
 ) {
     /**
      * Calculates distance to another location in kilometers

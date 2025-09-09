@@ -14,6 +14,8 @@ import kotlin.system.measureTimeMillis
 /**
  * Main coordinator for app startup verification and health checks.
  * Manages execution of all health checks and provides comprehensive status reporting.
+ * 
+ * Enhanced with comprehensive real-time monitoring capabilities for railway operations.
  */
 @Singleton
 class AppStartupVerifier @Inject constructor(
@@ -22,6 +24,8 @@ class AppStartupVerifier @Inject constructor(
     private val realtimeConnectionHealthCheck: RealtimeConnectionHealthCheck,
     private val navigationHealthCheck: NavigationHealthCheck,
     private val dependencyInjectionHealthCheck: DependencyInjectionHealthCheck,
+    private val realTimeHealthCheck: RealTimeHealthCheck,
+    private val positionDataQualityHealthCheck: PositionDataQualityHealthCheck,
     private val logger: Logger
 ) {
     
@@ -30,6 +34,8 @@ class AppStartupVerifier @Inject constructor(
         supabaseConnectionHealthCheck,
         databaseAccessHealthCheck,
         realtimeConnectionHealthCheck,
+        realTimeHealthCheck, // Comprehensive real-time monitoring
+        positionDataQualityHealthCheck, // NEW: Position data quality validation
         navigationHealthCheck
     )
     

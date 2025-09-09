@@ -1,5 +1,6 @@
 package com.example.pravaahan.domain.model
 
+import androidx.compose.ui.geometry.Offset
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,8 +14,24 @@ data class Track(
     val capacity: Int = 1,
     val isActive: Boolean = true,
     val signalStatus: SignalStatus = SignalStatus.GREEN,
-    val occupiedBy: List<String> = emptyList() // Train IDs currently on this track
+    val occupiedBy: List<String> = emptyList(), // Train IDs currently on this track
+    // Position information for map rendering
+    val startLatitude: Double = 0.0,
+    val startLongitude: Double = 0.0,
+    val endLatitude: Double = 0.0,
+    val endLongitude: Double = 0.0
 ) {
+    /**
+     * Get start position as Offset for map rendering
+     */
+    val startPosition: Offset
+        get() = Offset(startLatitude.toFloat(), startLongitude.toFloat())
+    
+    /**
+     * Get end position as Offset for map rendering
+     */
+    val endPosition: Offset
+        get() = Offset(endLatitude.toFloat(), endLongitude.toFloat())
     /**
      * Checks if track is available for new trains
      */

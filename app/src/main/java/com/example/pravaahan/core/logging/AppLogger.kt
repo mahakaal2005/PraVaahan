@@ -60,4 +60,12 @@ class AppLogger @Inject constructor() : Logger {
             throwable?.printStackTrace()
         }
     }
+    
+    override fun logAccessibilityEvent(tag: String, event: String, message: String) {
+        Log.i("$APP_TAG:$tag", "Accessibility Event [$event]: $message")
+        // In production, could send to accessibility analytics
+        if (!BuildConfig.DEBUG) {
+            // TODO: Send to accessibility monitoring service
+        }
+    }
 }

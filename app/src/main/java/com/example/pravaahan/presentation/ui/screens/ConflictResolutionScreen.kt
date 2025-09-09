@@ -200,7 +200,7 @@ private fun ConflictResolutionContent(
                     // AI Recommendation
                     item {
                         AIRecommendationCard(
-                            recommendation = uiState.conflict.recommendation,
+                            recommendation = uiState.conflict.recommendation ?: "No recommendation available",
                             severity = uiState.conflict.severity
                         )
                     }
@@ -523,10 +523,11 @@ private fun InfoColumn(
 // Sample data for preview
 private val sampleConflict = ConflictAlert(
     id = "conflict-001",
-    trainsInvolved = listOf("train-001", "train-002"),
-    conflictType = ConflictType.POTENTIAL_COLLISION,
+    type = ConflictType.POTENTIAL_COLLISION,
     severity = ConflictSeverity.HIGH,
-    detectedAt = Clock.System.now(),
+    involvedTrains = listOf("train-001", "train-002"),
+    description = "Potential collision detected between trains",
+    timestamp = Clock.System.now(),
     estimatedImpactTime = Clock.System.now(),
     recommendation = "Reduce speed of Train 12001 to 60 km/h and hold Train 12002 at next signal until clear path is available."
 )

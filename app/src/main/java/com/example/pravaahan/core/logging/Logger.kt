@@ -14,4 +14,9 @@ interface Logger {
      * Special logging for critical train operations
      */
     fun critical(tag: String, message: String, throwable: Throwable? = null)
+    
+    /**
+     * Log accessibility events
+     */
+    fun logAccessibilityEvent(tag: String, event: String, message: String)
 }

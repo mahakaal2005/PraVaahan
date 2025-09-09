@@ -8,5 +8,6 @@ enum class TrainStatus {
     DELAYED,
     STOPPED,
     MAINTENANCE,
-    EMERGENCY
+    EMERGENCY,
+    CANCELLED
 }

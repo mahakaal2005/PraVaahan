@@ -19,7 +19,7 @@ class ConflictMapperTest {
         val conflictDto = ConflictDto(
             id = "conflict-id",
             trainsInvolved = listOf("train-1", "train-2"),
-            conflictType = "COLLISION_RISK",
+            conflictType = "POTENTIAL_COLLISION",
             severity = "HIGH",
             detectedAt = "2024-01-15T09:00:00Z",
             estimatedImpactTime = "2024-01-15T09:30:00Z",
@@ -56,7 +56,7 @@ class ConflictMapperTest {
         val conflictDto = ConflictDto(
             id = "conflict-id",
             trainsInvolved = listOf("train-1"),
-            conflictType = "TRACK_OCCUPATION",
+            conflictType = "TRACK_CONGESTION",
             severity = "MEDIUM",
             detectedAt = "2024-01-15T09:00:00Z",
             estimatedImpactTime = "2024-01-15T09:30:00Z",
@@ -86,7 +86,7 @@ class ConflictMapperTest {
         val conflictDto = ConflictDto(
             id = "conflict-id",
             trainsInvolved = listOf("train-1"),
-            conflictType = "SIGNAL_VIOLATION",
+            conflictType = "SIGNAL_FAILURE",
             severity = "LOW",
             detectedAt = "2024-01-15T09:00:00Z",
             estimatedImpactTime = null,
@@ -142,7 +142,7 @@ class ConflictMapperTest {
         val conflictDto = ConflictDto(
             id = "conflict-id",
             trainsInvolved = listOf("train-1"),
-            conflictType = "COLLISION_RISK",
+            conflictType = "POTENTIAL_COLLISION",
             severity = "INVALID_SEVERITY",
             detectedAt = "2024-01-15T09:00:00Z",
             estimatedImpactTime = "2024-01-15T09:30:00Z",
@@ -184,7 +184,7 @@ class ConflictMapperTest {
         // Assert
         assertEquals("conflict-id", conflictDto.id)
         assertEquals(listOf("train-1", "train-2"), conflictDto.trainsInvolved)
-        assertEquals("COLLISION_RISK", conflictDto.conflictType)
+        assertEquals("POTENTIAL_COLLISION", conflictDto.conflictType)
         assertEquals("CRITICAL", conflictDto.severity)
         assertEquals("2024-01-15T09:00:00Z", conflictDto.detectedAt)
         assertEquals("2024-01-15T09:30:00Z", conflictDto.estimatedImpactTime)
@@ -230,7 +230,7 @@ class ConflictMapperTest {
             ConflictDto(
                 id = "conflict-1",
                 trainsInvolved = listOf("train-1"),
-                conflictType = "COLLISION_RISK",
+                conflictType = "POTENTIAL_COLLISION",
                 severity = "HIGH",
                 detectedAt = "2024-01-15T09:00:00Z",
                 estimatedImpactTime = "2024-01-15T09:30:00Z",
@@ -244,7 +244,7 @@ class ConflictMapperTest {
             ConflictDto(
                 id = "conflict-2",
                 trainsInvolved = listOf("train-2", "train-3"),
-                conflictType = "TRACK_OCCUPATION",
+                conflictType = "TRACK_CONGESTION",
                 severity = "MEDIUM",
                 detectedAt = "2024-01-15T09:05:00Z",
                 estimatedImpactTime = "2024-01-15T09:35:00Z",
@@ -279,7 +279,7 @@ class ConflictMapperTest {
             ConflictDto(
                 id = "conflict-1",
                 trainsInvolved = listOf("train-1"),
-                conflictType = "COLLISION_RISK",
+                conflictType = "POTENTIAL_COLLISION",
                 severity = "HIGH",
                 detectedAt = "2024-01-15T09:00:00Z",
                 estimatedImpactTime = "2024-01-15T09:30:00Z",

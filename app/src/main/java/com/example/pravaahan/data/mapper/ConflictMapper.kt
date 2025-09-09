@@ -52,13 +52,14 @@ fun ConflictDto.toDomain(): Result<ConflictAlert> {
 
         val conflictAlert = ConflictAlert(
             id = id,
-            trainsInvolved = trainsInvolved,
-            conflictType = conflictTypeEnum,
+            type = conflictTypeEnum,
             severity = severityEnum,
-            detectedAt = detectedAtInstant,
+            involvedTrains = trainsInvolved,
+            description = "Conflict detected between trains: ${trainsInvolved.joinToString(", ")}",
+            timestamp = detectedAtInstant,
+            resolved = isResolved,
             estimatedImpactTime = estimatedImpactTimeInstant,
             recommendation = aiRecommendation,
-            isResolved = isResolved,
             resolvedAt = resolvedAtInstant,
             controllerAction = controllerAction
         )
@@ -81,7 +82,7 @@ fun ConflictAlert.toDto(): ConflictDto {
         severity = severity.name,
         detectedAt = detectedAt.toString(),
         estimatedImpactTime = estimatedImpactTime?.toString(),
-        aiRecommendation = recommendation,
+        aiRecommendation = recommendation ?: "No recommendation available",
         isResolved = isResolved,
         resolvedAt = resolvedAt?.toString(),
         controllerAction = controllerAction,

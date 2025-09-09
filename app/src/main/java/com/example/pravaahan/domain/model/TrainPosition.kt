@@ -14,7 +14,9 @@ data class TrainPosition(
     val heading: Double,
     val timestamp: Instant,
     val sectionId: String,
-    val accuracy: Double? = null
+    val accuracy: Double? = null,
+    val isSafetyReliable: Boolean = true,
+    val lastUpdateTime: Instant = timestamp
 ) {
     init {
         // Validate train ID

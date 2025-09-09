@@ -3,12 +3,21 @@ package com.example.pravaahan.fake
 import com.example.pravaahan.domain.model.Train
 import com.example.pravaahan.domain.model.TrainStatus
 import com.example.pravaahan.domain.model.Location
+import com.example.pravaahan.domain.model.TrainPosition
+import com.example.pravaahan.domain.model.RealTimeTrainState
+import com.example.pravaahan.domain.model.DataQualityIndicators
+import com.example.pravaahan.domain.model.ConnectionStatus
+import com.example.pravaahan.domain.model.ConnectionState
+import com.example.pravaahan.domain.model.NetworkQuality
+import com.example.pravaahan.domain.model.ValidationStatus
 import com.example.pravaahan.domain.repository.TrainRepository
 import com.example.pravaahan.util.TestDataFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.datetime.Clock
 
 /**
  * Fake implementation of TrainRepository for testing
@@ -17,6 +26,7 @@ import kotlinx.coroutines.flow.map
 class FakeTrainRepository : TrainRepository {
     
     private val _trains = MutableStateFlow<List<Train>>(emptyList())
+    private val _trainPositions = MutableStateFlow<List<TrainPosition>>(emptyList())
     private val _errors = mutableMapOf<String, Exception>()
     private var _shouldThrowError = false
     private var _networkDelay = 0L
@@ -96,6 +106,61 @@ class FakeTrainRepository : TrainRepository {
         return Result.success(filteredTrains)
     }
     
+    // NEW: Real-time position methods
+    
+    override fun getTrainPositionsRealtime(sectionId: String): Flow<List<TrainPosition>> {
+        return _trainPositions.map { positions ->
+            positions.filter { it.sectionId == sectionId }
+        }
+    }
+    
+    override fun getRealTimeTrainStates(sectionId: String): Flow<List<RealTimeTrainState>> {
+        return _trains.map { trains ->
+            trains.filter { it.currentLocation.sectionId == sectionId }.map { train ->
+                val position = _trainPositions.value.find { it.trainId == train.id }
+                
+                RealTimeTrainState(
+                    trainId = train.id,
+                    currentPosition = position,
+                    dataQuality = DataQualityIndicators(
+                        signalStrength = 0.85,
+                        gpsAccuracy = 5.0,
+                        dataFreshness = 1.0,
+                        validationStatus = ValidationStatus.VALID,
+                        sourceReliability = 0.9,
+                        overallScore = 0.9
+                    ),
+                    connectionStatus = ConnectionStatus(
+                        state = ConnectionState.CONNECTED,
+                        lastSuccessfulCommunication = Clock.System.now(),
+                        networkQuality = NetworkQuality.GOOD
+                    ),
+                    lastUpdateTime = position?.timestamp ?: Clock.System.now()
+                )
+            }
+        }
+    }
+    
+    override suspend fun updateTrainPosition(position: TrainPosition): Result<Unit> {
+        simulateNetworkDelay()
+        
+        if (_shouldThrowError) {
+            return Result.failure(_errors["api_error"] ?: RuntimeException("Failed to update train position"))
+        }
+        
+        val currentPositions = _trainPositions.value.toMutableList()
+        val existingIndex = currentPositions.indexOfFirst { it.trainId == position.trainId }
+        
+        if (existingIndex >= 0) {
+            currentPositions[existingIndex] = position
+        } else {
+            currentPositions.add(position)
+        }
+        
+        _trainPositions.value = currentPositions
+        return Result.success(Unit)
+    }
+    
     // Test control methods
     
     /**
@@ -103,6 +168,20 @@ class FakeTrainRepository : TrainRepository {
      */
     fun setTrains(trains: List<Train>) {
         _trains.value = trains
+    }
+    
+    /**
+     * Sets the train positions data for testing
+     */
+    fun setTrainPositions(positions: List<TrainPosition>) {
+        _trainPositions.value = positions
+    }
+    
+    /**
+     * Adds a single train position to the current list
+     */
+    fun addTrainPosition(position: TrainPosition) {
+        _trainPositions.value = _trainPositions.value + position
     }
     
     /**
@@ -141,6 +220,7 @@ class FakeTrainRepository : TrainRepository {
      */
     fun reset() {
         _trains.value = TestDataFactory.createTrainList()
+        _trainPositions.value = emptyList()
         _errors.clear()
         _shouldThrowError = false
         _networkDelay = 0L

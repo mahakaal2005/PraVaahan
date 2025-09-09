@@ -313,10 +313,11 @@ private val sampleTrains = listOf(
 
 private val sampleConflict = ConflictAlert(
     id = "conflict-001",
-    trainsInvolved = listOf("12001", "12002"),
-    conflictType = ConflictType.POTENTIAL_COLLISION,
+    type = ConflictType.POTENTIAL_COLLISION,
     severity = ConflictSeverity.HIGH,
-    detectedAt = Clock.System.now(),
+    involvedTrains = listOf("12001", "12002"),
+    description = "Potential collision detected between trains",
+    timestamp = Clock.System.now(),
     estimatedImpactTime = Clock.System.now(),
     recommendation = "Reduce speed of Train 12001 to 60 km/h and hold Train 12002 at next signal."
 )

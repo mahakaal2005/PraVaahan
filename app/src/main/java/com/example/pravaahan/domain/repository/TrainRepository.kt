@@ -3,6 +3,8 @@ package com.example.pravaahan.domain.repository
 import com.example.pravaahan.domain.model.Train
 import com.example.pravaahan.domain.model.TrainStatus
 import com.example.pravaahan.domain.model.Location
+import com.example.pravaahan.domain.model.TrainPosition
+import com.example.pravaahan.domain.model.RealTimeTrainState
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -38,4 +40,21 @@ interface TrainRepository {
      * Get trains in a specific section
      */
     suspend fun getTrainsInSection(sectionId: String): Result<List<Train>>
+    
+    // NEW: Real-time position methods
+    
+    /**
+     * Get real-time train positions for a specific section
+     */
+    fun getTrainPositionsRealtime(sectionId: String): Flow<List<TrainPosition>>
+    
+    /**
+     * Get real-time train states combining train metadata with position data
+     */
+    fun getRealTimeTrainStates(sectionId: String): Flow<List<RealTimeTrainState>>
+    
+    /**
+     * Update a train's real-time position
+     */
+    suspend fun updateTrainPosition(position: TrainPosition): Result<Unit>
 }

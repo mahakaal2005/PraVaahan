@@ -59,6 +59,11 @@ fun TrainStatusChip(
             ConflictRed,
             "Emergency"
         )
+        TrainStatus.CANCELLED -> Triple(
+            ConflictRedContainer,
+            ConflictRed,
+            "Cancelled"
+        )
     }
 
     AssistChip(
