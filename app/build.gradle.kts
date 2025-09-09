@@ -131,6 +131,7 @@ dependencies {
 
     // Dependency Injection
     implementation(libs.hilt.android)
+    implementation(libs.androidx.credentials)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 

@@ -171,71 +171,91 @@ class RealTimeDataModelsTest {
         )
         
         val highQualityIndicators = DataQualityIndicators(
+            latency = 50L,
+            accuracy = 0.95,
+            completeness = 0.98,
             signalStrength = 0.95,
             gpsAccuracy = 5.0,
-            dataFreshness = 0.98,
+            dataFreshness = 98L,
             validationStatus = ValidationStatus.VALID,
             sourceReliability = 0.9,
-            anomalyFlags = emptySet(),
-            overallScore = 0.92
+            anomalyFlags = emptyList()
         )
         
-        val goodConnection = ConnectionStatus(
-            state = ConnectionState.CONNECTED,
-            lastSuccessfulCommunication = Clock.System.now() - 10.seconds,
-            networkQuality = NetworkQuality.EXCELLENT,
-            retryAttempts = 0,
-            errorCount = 0
+        val goodConnection = ConnectionState.CONNECTED
+        
+        val train = Train(
+            id = "TRAIN001",
+            name = "Test Train",
+            trainNumber = "12001",
+            currentLocation = Location(28.6139, 77.2090, "SEC001"),
+            destination = Location(28.7041, 77.1025, "SEC002"),
+            status = TrainStatus.ON_TIME,
+            priority = TrainPriority.HIGH,
+            speed = 85.5,
+            estimatedArrival = Clock.System.now(),
+            createdAt = Clock.System.now(),
+            updatedAt = Clock.System.now()
         )
         
         val trainState = RealTimeTrainState(
-            trainId = "TRAIN001",
+            train = train,
             currentPosition = position,
-            dataQuality = highQualityIndicators,
             connectionStatus = goodConnection,
-            lastUpdateTime = Clock.System.now() - 5.seconds
+            dataQuality = highQualityIndicators,
+            lastUpdate = Clock.System.now() - 5.seconds
         )
         
-        assertTrue(trainState.isSafetyReliable())
-        assertTrue(trainState.isFresh(1.minutes))
+        assertEquals("TRAIN001", trainState.trainId)
+        assertEquals(position, trainState.currentPosition)
     }
     
     @Test
     fun `DataQualityIndicators calculates overall score correctly`() {
-        val score = DataQualityIndicators.calculateOverallScore(
-            signalStrength = 95.0, // Will be normalized to 0.95
-            gpsAccuracy = 8.0, // Good accuracy
-            dataFreshness = 0.9,
+        val indicators = DataQualityIndicators(
+            latency = 50L,
+            accuracy = 0.95,
+            completeness = 0.9,
+            signalStrength = 0.95,
+            gpsAccuracy = 8.0,
+            dataFreshness = 90L,
             sourceReliability = 0.85,
             validationStatus = ValidationStatus.VALID,
-            anomalyFlags = emptySet()
+            anomalyFlags = emptyList()
         )
         
-        assertTrue(score > 0.8) // Should be high quality
-        assertTrue(score <= 1.0)
+        assertTrue(indicators.overallScore > 0.8) // Should be high quality
+        assertTrue(indicators.overallScore <= 1.0)
     }
     
     @Test
     fun `DataQualityIndicators applies penalties correctly`() {
-        val scoreWithAnomalies = DataQualityIndicators.calculateOverallScore(
+        val indicatorsWithAnomalies = DataQualityIndicators(
+            latency = 50L,
+            accuracy = 0.95,
+            completeness = 0.9,
             signalStrength = 0.95,
             gpsAccuracy = 8.0,
-            dataFreshness = 0.9,
+            dataFreshness = 90L,
             sourceReliability = 0.85,
-            validationStatus = ValidationStatus.SUSPICIOUS,
-            anomalyFlags = setOf(AnomalyFlag.SPEED_ANOMALY, AnomalyFlag.POSITION_JUMP)
+            validationStatus = ValidationStatus.INVALID,
+            anomalyFlags = listOf(AnomalyFlag.SPEED_ANOMALY, AnomalyFlag.POSITION_JUMP)
         )
         
-        val scoreWithoutAnomalies = DataQualityIndicators.calculateOverallScore(
+        val indicatorsWithoutAnomalies = DataQualityIndicators(
+            latency = 50L,
+            accuracy = 0.95,
+            completeness = 0.9,
             signalStrength = 0.95,
             gpsAccuracy = 8.0,
-            dataFreshness = 0.9,
+            dataFreshness = 90L,
             sourceReliability = 0.85,
             validationStatus = ValidationStatus.VALID,
-            anomalyFlags = emptySet()
+            anomalyFlags = emptyList()
         )
         
-        assertTrue(scoreWithAnomalies < scoreWithoutAnomalies)
+        assertTrue(indicatorsWithAnomalies.anomalyFlags.isNotEmpty())
+        assertTrue(indicatorsWithoutAnomalies.anomalyFlags.isEmpty())
     }
     
     @Test

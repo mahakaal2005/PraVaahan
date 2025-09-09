@@ -73,12 +73,16 @@ object TestDataFactory {
     ): ConflictAlert {
         return ConflictAlert(
             id = id,
+            type = conflictType,
+            severity = severity,
+            involvedTrains = trainsInvolved,
+            description = recommendation,
+            timestamp = detectedAt,
             trainsInvolved = trainsInvolved,
             conflictType = conflictType,
             detectedAt = detectedAt,
             estimatedImpactTime = estimatedImpactTime,
-            recommendation = recommendation,
-            severity = severity
+            recommendation = recommendation
         )
     }
     

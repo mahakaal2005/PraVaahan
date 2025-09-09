@@ -1,22 +1,22 @@
 package com.example.pravaahan
 
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.pravaahan.core.health.AppHealthStatus
 import com.example.pravaahan.core.health.AppStartupVerifier
-import com.example.pravaahan.core.health.HealthStatus
 import com.example.pravaahan.domain.model.*
-import com.example.pravaahan.util.ComposeTestUtils
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Comprehensive end-to-end tests for PraVaahan railway control system.
@@ -53,10 +53,10 @@ class AppEndToEndTest {
     @Test
     fun appStartupVerificationPasses() = runTest {
         // Verify all app components are healthy
-        val healthStatus = appStartupVerifier.verifyAppComponents()
+        val healthStatus = appStartupVerifier.verifyAppStartup()
         assertTrue(
-            healthStatus is HealthStatus.Healthy,
-            "App startup verification should pass: $healthStatus"
+            "App startup verification should pass: $healthStatus",
+            healthStatus is AppHealthStatus.Healthy
         )
     }
 
@@ -103,10 +103,10 @@ class AppEndToEndTest {
         val errorNodes = composeTestRule.onAllNodesWithTag("error_message")
         if (errorNodes.fetchSemanticsNodes().isNotEmpty()) {
             // Verify error message is user-friendly
-            val errorText = errorNodes.onFirst().fetchSemanticsNode().config.getOrNull(SemanticsProperties.Text)
+            val errorText = errorNodes.onFirst().fetchSemanticsNode().config[SemanticsProperties.Text]
             assertTrue(
-                errorText?.any { it.text.contains("connection") || it.text.contains("network") || it.text.contains("try again") } == true,
-                "Error message should be user-friendly"
+                "Error message should be user-friendly",
+                errorText.any { text -> text.text.contains("connection") || text.text.contains("network") || text.text.contains("try again") }
             )
             
             // Verify retry button is present
@@ -214,12 +214,13 @@ class AppEndToEndTest {
 
         // Verify state is preserved
         composeTestRule.onNodeWithText("Train Control Dashboard").assertIsDisplayed()
-        val finalTrainCount = composeTestRule.onAllNodesWithTag("train_card").fetchSemanticsNodes().size
         
+        // Verify train count is preserved (allowing for real-time updates)
+        val currentTrainCount = composeTestRule.onAllNodesWithTag("train_card").fetchSemanticsNodes().size
         assertEquals(
-            initialTrainCount,
-            finalTrainCount,
-            "Train count should be preserved during navigation"
+            "Train state should be preserved during navigation",
+            initialTrainCount, 
+            currentTrainCount
         )
     }
 }

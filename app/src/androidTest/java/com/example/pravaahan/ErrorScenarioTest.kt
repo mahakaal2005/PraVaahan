@@ -7,15 +7,16 @@ import com.example.pravaahan.core.error.AppError
 import com.example.pravaahan.core.error.ErrorHandler
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import androidx.compose.ui.semantics.SemanticsProperties
+
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Tests error handling scenarios to ensure the app gracefully handles failures
@@ -71,8 +72,8 @@ class ErrorScenarioTest {
         val appError = errorHandler.handleError(networkException)
         
         assertTrue(
-            appError is AppError.NetworkError,
-            "Network exceptions should be converted to NetworkError"
+            "Network exceptions should be converted to NetworkError",
+            appError is AppError.NetworkError
         )
     }
 
@@ -82,8 +83,8 @@ class ErrorScenarioTest {
         val appError = errorHandler.handleError(apiException)
         
         assertTrue(
-            appError is AppError.UnknownError,
-            "API exceptions should be handled gracefully"
+            "API exceptions should be handled gracefully",
+            appError is AppError.NetworkError || appError is AppError.SystemError.UnexpectedError
         )
     }
 
@@ -102,9 +103,9 @@ class ErrorScenarioTest {
             // Verify empty state message is shown
             val emptyStateNodes = composeTestRule.onAllNodesWithText("No trains available")
             assertTrue(
+                "Should display appropriate empty state message",
                 emptyStateNodes.fetchSemanticsNodes().isNotEmpty() ||
-                composeTestRule.onAllNodesWithText("No active conflicts").fetchSemanticsNodes().isNotEmpty(),
-                "Should display appropriate empty state message"
+                composeTestRule.onAllNodesWithText("No active conflicts").fetchSemanticsNodes().isNotEmpty()
             )
         }
     }
@@ -120,7 +121,7 @@ class ErrorScenarioTest {
         }
         
         // Test refresh loading state
-        composeTestRule.onNodeWithContentDescription("Refresh trains").performClick()
+        composeTestRule.onNodeWithContentDescription("Refresh data").performClick()
         
         // Verify loading indicator appears during refresh
         composeTestRule.onNodeWithTag("loading_indicator").assertIsDisplayed()
@@ -155,7 +156,7 @@ class ErrorScenarioTest {
                 
                 // Verify back navigation still works
                 composeTestRule.onNodeWithContentDescription("Navigate back").performClick()
-                composeTestRule.onNodeWithText("Train Control Dashboard").assertIsDisplayed()
+                composeTestRule.onNodeWithText("PraVaahan Control").assertIsDisplayed()
             }
         }
     }
@@ -187,7 +188,7 @@ class ErrorScenarioTest {
                 
                 // Verify user can still navigate back
                 composeTestRule.onNodeWithContentDescription("Navigate back").performClick()
-                composeTestRule.onNodeWithText("Train Control Dashboard").assertIsDisplayed()
+                composeTestRule.onNodeWithText("PraVaahan Control").assertIsDisplayed()
             }
         }
     }
@@ -207,14 +208,14 @@ class ErrorScenarioTest {
         val errorMessages = composeTestRule.onAllNodesWithTag("error_message")
         if (errorMessages.fetchSemanticsNodes().isNotEmpty()) {
             val errorText = errorMessages.onFirst().fetchSemanticsNode()
-                .config.getOrNull(SemanticsProperties.Text)?.firstOrNull()?.text
+                .config[SemanticsProperties.Text].firstOrNull()?.text
             
             assertTrue(
+                "Timeout errors should display user-friendly messages",
                 errorText?.contains("connection") == true ||
                 errorText?.contains("timeout") == true ||
                 errorText?.contains("network") == true ||
-                errorText?.contains("try again") == true,
-                "Timeout errors should display user-friendly messages"
+                errorText?.contains("try again") == true
             )
         }
     }
@@ -224,11 +225,11 @@ class ErrorScenarioTest {
         // This test ensures the app remains stable even when unexpected errors occur
         
         // Navigate through the app to trigger various operations
-        composeTestRule.onNodeWithText("Train Control Dashboard").assertIsDisplayed()
+        composeTestRule.onNodeWithText("PraVaahan Control").assertIsDisplayed()
         
         // Try refresh multiple times rapidly
         repeat(3) {
-            composeTestRule.onNodeWithContentDescription("Refresh trains").performClick()
+            composeTestRule.onNodeWithContentDescription("Refresh data").performClick()
             Thread.sleep(100) // Small delay between clicks
         }
         
@@ -238,10 +239,13 @@ class ErrorScenarioTest {
         
         // Navigate back
         composeTestRule.onNodeWithContentDescription("Navigate back").performClick()
-        composeTestRule.onNodeWithText("Train Control Dashboard").assertIsDisplayed()
+        composeTestRule.onNodeWithText("PraVaahan Control").assertIsDisplayed()
         
         // App should still be responsive and not crashed
-        assertTrue(true, "App remained stable during stress operations")
+        assertTrue(
+            "App remained stable during stress operations",
+            true
+        )
     }
 
     @Test
@@ -259,13 +263,13 @@ class ErrorScenarioTest {
             
             // Verify error message has content description or text
             val hasContentDescription = errorNode.fetchSemanticsNode()
-                .config.getOrNull(SemanticsProperties.ContentDescription) != null
+                .config.contains(SemanticsProperties.ContentDescription)
             val hasText = errorNode.fetchSemanticsNode()
-                .config.getOrNull(SemanticsProperties.Text) != null
+                .config.contains(SemanticsProperties.Text)
             
             assertTrue(
-                hasContentDescription || hasText,
-                "Error messages should be accessible to screen readers"
+                "Error messages should be accessible to screen readers",
+                hasContentDescription || hasText
             )
         }
     }

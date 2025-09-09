@@ -167,10 +167,11 @@ class ConflictMapperTest {
         // Arrange
         val conflict = ConflictAlert(
             id = "conflict-id",
-            trainsInvolved = listOf("train-1", "train-2"),
-            conflictType = ConflictType.POTENTIAL_COLLISION,
+            type = ConflictType.POTENTIAL_COLLISION,
             severity = ConflictSeverity.CRITICAL,
-            detectedAt = Instant.parse("2024-01-15T09:00:00Z"),
+            involvedTrains = listOf("train-1", "train-2"),
+            description = "Emergency stop required",
+            timestamp = Instant.parse("2024-01-15T09:00:00Z"),
             estimatedImpactTime = Instant.parse("2024-01-15T09:30:00Z"),
             recommendation = "Emergency stop required",
             isResolved = false,
@@ -201,10 +202,11 @@ class ConflictMapperTest {
         // Arrange
         val conflict = ConflictAlert(
             id = "conflict-id",
-            trainsInvolved = listOf("train-1"),
-            conflictType = ConflictType.TRACK_CONGESTION,
+            type = ConflictType.TRACK_CONGESTION,
             severity = ConflictSeverity.MEDIUM,
-            detectedAt = Instant.parse("2024-01-15T09:00:00Z"),
+            involvedTrains = listOf("train-1"),
+            description = "Wait for clearance",
+            timestamp = Instant.parse("2024-01-15T09:00:00Z"),
             estimatedImpactTime = Instant.parse("2024-01-15T09:30:00Z"),
             recommendation = "Wait for clearance",
             isResolved = true,

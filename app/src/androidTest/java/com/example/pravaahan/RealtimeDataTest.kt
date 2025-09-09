@@ -9,12 +9,12 @@ import io.github.jan.supabase.SupabaseClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeout
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
-import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -48,7 +48,10 @@ class RealtimeDataTest {
             }
             
             // If we get here without timeout, connection is working
-            assertTrue(true, "Supabase connection established successfully")
+            assertTrue(
+                "Supabase connection established successfully",
+                true
+            )
         } catch (e: Exception) {
             // Log the error but don't fail the test if it's a network issue
             println("Supabase connection test failed: ${e.message}")
@@ -66,15 +69,15 @@ class RealtimeDataTest {
             
             // Verify we can retrieve train data
             assertTrue(
-                trains.isNotEmpty() || trains.isEmpty(), // Either case is valid
-                "Should be able to retrieve train data (empty or populated)"
+                "Should be able to retrieve train data (empty or populated)",
+                trains.isNotEmpty() || trains.isEmpty() // Either case is valid
             )
             
             // If trains exist, verify they have required properties
             trains.forEach { train ->
-                assertTrue(train.id.isNotBlank(), "Train should have valid ID")
-                assertTrue(train.name.isNotBlank(), "Train should have valid name")
-                assertTrue(train.status in TrainStatus.values(), "Train should have valid status")
+                assertTrue("Train should have valid ID", train.id.isNotBlank())
+                assertTrue("Train should have valid name", train.name.isNotBlank())
+                assertTrue("Train should have valid status", train.status in TrainStatus.values())
             }
             
         } catch (e: Exception) {
@@ -103,8 +106,8 @@ class RealtimeDataTest {
                 val updateResult = trainRepository.updateTrainStatus(testTrain.id, newStatus)
                 
                 assertTrue(
-                    updateResult.isSuccess,
-                    "Train status update should succeed"
+                    "Train status update should succeed",
+                    updateResult.isSuccess
                 )
             } else {
                 println("No trains available for status update test")
@@ -123,11 +126,17 @@ class RealtimeDataTest {
             
             // This should either fail gracefully or succeed (depending on implementation)
             // The important thing is that it doesn't crash the app
-            assertTrue(true, "Invalid operation handled gracefully")
+            assertTrue(
+                "Invalid operation handled gracefully",
+                true
+            )
             
         } catch (e: Exception) {
             // Exception is acceptable for invalid operations
-            assertTrue(true, "Invalid operation threw expected exception: ${e.message}")
+            assertTrue(
+                "Invalid operation threw expected exception: ${e.message}",
+                true
+            )
         }
     }
 
@@ -141,10 +150,10 @@ class RealtimeDataTest {
         } catch (e: Exception) {
             // Timeout or network error is expected and should be handled gracefully
             assertTrue(
+                "Network timeout should be handled gracefully",
                 e.message?.contains("timeout") == true || 
                 e.message?.contains("network") == true ||
-                e.message?.contains("connection") == true,
-                "Network timeout should be handled gracefully"
+                e.message?.contains("connection") == true
             )
         }
     }

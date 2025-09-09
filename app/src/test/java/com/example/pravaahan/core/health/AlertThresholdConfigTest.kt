@@ -1,14 +1,14 @@
 package com.example.pravaahan.core.health
 
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class AlertThresholdConfigTest {
     
     private lateinit var alertThresholdConfig: AlertThresholdConfig
     
-    @Before
+    @BeforeEach
     fun setup() {
         alertThresholdConfig = AlertThresholdConfig()
     }

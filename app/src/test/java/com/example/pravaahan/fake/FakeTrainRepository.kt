@@ -119,23 +119,22 @@ class FakeTrainRepository : TrainRepository {
             trains.filter { it.currentLocation.sectionId == sectionId }.map { train ->
                 val position = _trainPositions.value.find { it.trainId == train.id }
                 
+                val train = trains.find { it.id == train.id }!!
                 RealTimeTrainState(
-                    trainId = train.id,
+                    train = train,
                     currentPosition = position,
+                    connectionStatus = ConnectionState.CONNECTED,
                     dataQuality = DataQualityIndicators(
+                        latency = 50L,
+                        accuracy = 0.85,
+                        completeness = 0.9,
                         signalStrength = 0.85,
                         gpsAccuracy = 5.0,
-                        dataFreshness = 1.0,
+                        dataFreshness = 95L,
                         validationStatus = ValidationStatus.VALID,
-                        sourceReliability = 0.9,
-                        overallScore = 0.9
+                        sourceReliability = 0.9
                     ),
-                    connectionStatus = ConnectionStatus(
-                        state = ConnectionState.CONNECTED,
-                        lastSuccessfulCommunication = Clock.System.now(),
-                        networkQuality = NetworkQuality.GOOD
-                    ),
-                    lastUpdateTime = position?.timestamp ?: Clock.System.now()
+                    lastUpdate = position?.timestamp ?: Clock.System.now()
                 )
             }
         }

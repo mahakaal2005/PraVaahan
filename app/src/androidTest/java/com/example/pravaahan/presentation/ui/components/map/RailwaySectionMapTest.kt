@@ -4,7 +4,6 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.pravaahan.data.sample.SampleRailwayData
-import com.example.pravaahan.presentation.ui.theme.PraVaahanTheme
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -36,15 +35,13 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = trainStates,
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { trainId ->
-                        selectedTrainId = trainId
-                    }
-                )
-            }
+            RailwaySectionMap(
+                trainStates = trainStates,
+                sectionConfig = sectionConfig,
+                onTrainSelected = { trainId ->
+                    selectedTrainId = trainId
+                }
+            )
         }
         
         // Then
@@ -62,15 +59,13 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = trainStates,
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { trainId ->
-                        selectedTrainId = trainId
-                    }
-                )
-            }
+            RailwaySectionMap(
+                trainStates = trainStates,
+                sectionConfig = sectionConfig,
+                onTrainSelected = { trainId ->
+                    selectedTrainId = trainId
+                }
+            )
         }
         
         // Find and click on a train marker
@@ -78,7 +73,7 @@ class RailwaySectionMapTest {
             .onNodeWithContentDescription(
                 "Train ${trainStates.first().train.name}, " +
                 "status: ${trainStates.first().train.status}, " +
-                "speed: ${trainStates.first().currentPosition.speed} km/h, " +
+                "speed: ${trainStates.first().currentPosition?.speed ?: 0} km/h, " +
                 "last update: ${trainStates.first().lastUpdateTime}",
                 substring = true
             )
@@ -97,13 +92,11 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = trainStates,
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { }
-                )
-            }
+            RailwaySectionMap(
+                trainStates = trainStates,
+                sectionConfig = sectionConfig,
+                onTrainSelected = { }
+            )
         }
         
         // Then
@@ -132,13 +125,11 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = trainStates,
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { }
-                )
-            }
+            RailwaySectionMap(
+                trainStates = trainStates,
+                sectionConfig = sectionConfig,
+                onTrainSelected = { }
+            )
         }
         
         // Test zoom in
@@ -180,14 +171,12 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = trainStates,
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { },
-                    isHighContrast = true
-                )
-            }
+            RailwaySectionMap(
+                trainStates = trainStates,
+                sectionConfig = sectionConfig,
+                onTrainSelected = { },
+                isHighContrast = true
+            )
         }
         
         // Then
@@ -203,13 +192,11 @@ class RailwaySectionMapTest {
         
         // When
         composeTestRule.setContent {
-            PraVaahanTheme {
-                RailwaySectionMap(
-                    trainStates = emptyList(),
-                    sectionConfig = sectionConfig,
-                    onTrainSelected = { }
-                )
-            }
+            RailwaySectionMap(
+                trainStates = emptyList(),
+                sectionConfig = sectionConfig,
+                onTrainSelected = { }
+            )
         }
         
         // Then

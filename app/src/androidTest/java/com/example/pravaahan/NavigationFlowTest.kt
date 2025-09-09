@@ -5,11 +5,11 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.test.assertTrue
 
 /**
  * Comprehensive navigation flow tests for all screens in the app.
@@ -81,8 +81,8 @@ class NavigationFlowTest {
             // If no trains available, verify empty state is handled
             val emptyStateNodes = composeTestRule.onAllNodesWithText("No trains available")
             assertTrue(
-                emptyStateNodes.fetchSemanticsNodes().isNotEmpty(),
-                "Should show empty state when no trains are available"
+                "Should show empty state when no trains are available",
+                emptyStateNodes.fetchSemanticsNodes().isNotEmpty()
             )
         }
     }
@@ -213,13 +213,13 @@ class NavigationFlowTest {
         val finalConflictCount = composeTestRule.onAllNodesWithTag("conflict_alert_card").fetchSemanticsNodes().size
 
         assertTrue(
-            initialTrainCount == finalTrainCount,
-            "Train count should be preserved during navigation"
+            "Train count should be preserved during navigation",
+            initialTrainCount == finalTrainCount
         )
         
         assertTrue(
-            initialConflictCount == finalConflictCount,
-            "Conflict count should be preserved during navigation"
+            "Conflict count should be preserved during navigation",
+            initialConflictCount == finalConflictCount
         )
     }
 
